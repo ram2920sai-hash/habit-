@@ -26,7 +26,17 @@ class Postgres:
         # Certificate validation is mandatory for cloud databases. Only local tests
         # may explicitly use sslmode=disable on a loopback-only database.
         from urllib.parse import urlsplit
-        host=urlsplit(url).hostname
+        # Connection dialogs sometimes display a DNS host in placeholder brackets.
+        # Strip only brackets around the host after @, never password characters
+        # or brackets around an IPv6 literal.
+        url=re.sub(r'(?<=@)\[([A-Za-z0-9.-]+\.[A-Za-z0-9.-]+)\](?=:\d+(?:/|$)|/|$)',r'\1',url.strip())
+        try:
+            parsed=urlsplit(url)
+            host=parsed.hostname
+        except ValueError:
+            raise ValueError('DATABASE_URL has invalid address formatting. Use the Supabase Session pooler URI; keep credentials private.') from None
+        if parsed.scheme not in ('postgres','postgresql') or not host:
+            raise ValueError('DATABASE_URL must be a complete PostgreSQL connection URI.')
         options={} if host in ('localhost','127.0.0.1','::1') else {'sslmode':'verify-full','sslrootcert':'system'}
         self.db=psycopg.connect(url,row_factory=dict_row,connect_timeout=20,**options)
     def execute(self,sql,params=()):

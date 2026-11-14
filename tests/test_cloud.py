@@ -43,3 +43,21 @@ def test_render_refuses_ephemeral_database():
     response=subprocess.run([sys.executable,'-c','import server'],env=env,capture_output=True,text=True,timeout=30)
     assert response.returncode!=0
     assert 'Set DATABASE_URL' in response.stderr
+
+
+def test_bracketed_dns_hostname_does_not_change_password(monkeypatch):
+    from database import Postgres
+    captured=[]
+    monkeypatch.setattr('database.psycopg.connect',lambda url,**kwargs:captured.append((url,kwargs)))
+    Postgres('postgresql://postgres.project:fake%40password@[aws-0-ap-south-1.pooler.supabase.com]:5432/postgres?sslmode=verify-full')
+    assert captured[0][0]=='postgresql://postgres.project:fake%40password@aws-0-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=verify-full'
+    assert captured[0][1]['sslmode']=='verify-full'
+
+
+def test_standard_uri_and_ipv6_are_preserved(monkeypatch):
+    from database import Postgres
+    captured=[]
+    monkeypatch.setattr('database.psycopg.connect',lambda url,**kwargs:captured.append(url))
+    for url in ('postgresql://user:fake%5Bpassword%5D@db.example.com/db','postgresql://user:fake@[::1]:5432/db'):
+        Postgres(url)
+        assert captured[-1]==url
