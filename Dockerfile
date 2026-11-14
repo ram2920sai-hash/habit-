@@ -4,6 +4,7 @@ WORKDIR /app
 COPY requirements.lock.txt .
 RUN pip install --no-cache-dir -r requirements.lock.txt && useradd --uid 10001 --create-home nexo && mkdir /app/data && chown nexo:nexo /app/data
 COPY --chown=nexo:nexo server.py database.py ./
+COPY --chown=nexo:nexo certs ./certs
 COPY --chown=nexo:nexo static ./static
 USER nexo
 EXPOSE 8000

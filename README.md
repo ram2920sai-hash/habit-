@@ -19,6 +19,8 @@ To avoid password encoding mistakes, use two private Render settings: `DATABASE_
 
 The included render.yaml also defines these settings for a Render Blueprint. Supply private values in the Render dashboard. No cloud accounts, database, or email sender are created just by uploading this code.
 
+Supabase connections use the bundled public Supabase Root 2021 CA, downloaded from the Database Settings certificate link: `https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt`. Certificate and hostname verification remain required. Other cloud databases use the system CA store. For a provider-specific replacement CA, set DATABASE_SSLROOTCERT to its local file path; never disable verification to work around a certificate error.
+
 On first startup, tables are created automatically. PostgreSQL connections verify the database server's TLS certificate. Supabase tables enable row-level security and remove browser-role permissions: this app uses its own backend sessions, not Supabase Auth or the public Data API. Keep the database owner credentials on the backend only.
 
 Free hosts have limits: Render may sleep when idle, Neon limits storage/compute, and Supabase may pause an inactive free project. Keep separate private backups. The app's existing JSON export/restore can transfer one user's habits between deployments; changing DATABASE_URL alone does not copy an old SQLite database or existing account logins. No old user database is included in this repository.

@@ -1,6 +1,7 @@
 """SQLite for local use; PostgreSQL for Neon/Supabase and ephemeral hosts."""
 import re
 import os
+from pathlib import Path
 
 import psycopg
 from psycopg.rows import dict_row
@@ -39,6 +40,10 @@ class Postgres:
         if parsed.scheme not in ('postgres','postgresql') or not host:
             raise ValueError('DATABASE_URL must be a complete PostgreSQL connection URI.')
         options={} if host in ('localhost','127.0.0.1','::1') else {'sslmode':'verify-full','sslrootcert':'system'}
+        if options:
+            supabase_host=host.endswith('.pooler.supabase.com') or host.endswith('.supabase.co')
+            bundled_ca=str(Path(__file__).resolve().parent/'certs'/'supabase-ca.crt')
+            options['sslrootcert']=os.getenv('DATABASE_SSLROOTCERT') or (bundled_ca if supabase_host else 'system')
         if os.getenv('DATABASE_PASSWORD'):
             options['password']=os.environ['DATABASE_PASSWORD']
         self.db=psycopg.connect(url,row_factory=dict_row,connect_timeout=20,**options)

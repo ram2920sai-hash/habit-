@@ -74,3 +74,14 @@ def test_separate_database_password_preserves_symbols(monkeypatch):
     assert captured[0][0]==url
     assert captured[0][1]['password']==password
     assert captured[0][1]['sslmode']=='verify-full'
+    assert captured[0][1]['sslrootcert'].endswith('supabase-ca.crt')
+
+
+def test_supabase_ca_is_a_public_ca_certificate():
+    import ssl
+    from pathlib import Path
+    certificate=Path(server.__file__).parent/'certs'/'supabase-ca.crt'
+    assert certificate.exists()
+    context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.load_verify_locations(cafile=str(certificate))
+    assert context.cert_store_stats()['x509_ca']==1
