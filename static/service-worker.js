@@ -1,5 +1,5 @@
 /* Cache only immutable app assets; never cache API responses or personalized pages. */
-const CACHE = 'nexo-shell-v3';
+const CACHE = 'nexo-shell-v4';
 const SHELL = ['/static/style.css','/static/app.js','/static/pwa.js','/static/icons/icon-192.png','/static/icons/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));

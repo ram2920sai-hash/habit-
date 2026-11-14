@@ -42,6 +42,21 @@ Open http://127.0.0.1:8000. Create an account using an email inbox you control. 
 
 Choose light or dark mode with the top bar button or Settings → Appearance. Preferences are stored on the server for each account.
 
+## Continue with Google (optional)
+
+1. Open https://console.cloud.google.com/ and create/select a project named NEXO.
+2. Open Google Auth Platform. Complete Branding (app name NEXO, your support/contact email) and choose an External audience. Request only OpenID, email, and basic profile access; no Gmail API access is needed.
+3. Under Clients, create an OAuth client with application type **Web application**, named NEXO Web.
+4. Add the exact Authorized redirect URI `https://YOUR-RENDER-HOST/api/auth/google/callback`. For this deployment it is `https://nexo-habit-ram2920.onrender.com/api/auth/google/callback`. No trailing slash. This server redirect flow does not require JavaScript origins.
+5. Add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to Render's private Environment settings. Keep `NEXO_PUBLIC_ORIGIN` equal to the public HTTPS site origin. Never commit the secret or upload the downloaded client credentials JSON.
+6. Save and redeploy. The login/signup page displays **Continue with Google** only when these settings exist. Test it using your own Google account. For restricted testing, add your account under Audience/Test users; check Google's Audience/publishing requirements before inviting friends.
+
+Google accounts are identified by their verified Google subject ID. A new Google account gets its own private habits and the normal persistent NEXO session. Tokens are verified by Google's library and discarded; no Google password or provider token is stored. Authorization codes and state are removed from Uvicorn callback access logs. Configure any additional proxy/log collector to redact the callback query string too.
+
+For safety, an existing email/password account is **not automatically merged** with a Google account using the same email. Continue using its existing login; its habits remain intact. Account linking is not implemented. Google login does not configure password-reset email delivery: that still needs the email provider below. Real Google sign-in must be checked after creating your own OAuth credentials; automated tests mock provider responses.
+
+Official setup: https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid
+
 ## Configure password reset email
 
 Edit the private `.env` file or your host's secret environment variables:

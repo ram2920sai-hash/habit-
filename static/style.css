@@ -41,3 +41,5 @@ body.dark .install-nexo{background:#233d34;color:#c6f2d6;border-color:#406a54;}
 .password-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:flex;justify-content:center;align-items:center;border:0;border-radius:9px;background:transparent;color:var(--sub);cursor:pointer;transition:background .15s,color .15s}
 .password-toggle:hover,.password-toggle:focus-visible{background:var(--lightblue);color:var(--blue)}
 .password-toggle svg{pointer-events:none}
+
+.google-signin{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;box-sizing:border-box;padding:13px 18px;border:1px solid #d8deeb;border-radius:12px;background:#fff;color:#26324b;text-decoration:none;font:600 15px system-ui,sans-serif;min-height:48px}.google-signin:hover{background:#f5f7fc}.google-signin:focus-visible{outline:3px solid #7689ed;outline-offset:3px}.google-letter{color:#4285f4;font-size:21px;font-weight:750}.auth-divider{text-align:center;color:#8c98af;font-size:12px;margin:16px 0}.dark .google-signin{background:#232e43;color:#eef2ff;border-color:#46516c}

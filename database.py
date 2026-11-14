@@ -74,7 +74,7 @@ class Postgres:
         for statement in script.split(';'):
             if statement.strip(): self.db.execute(statement)
         # No browser Data API access to account tables, including when using Supabase.
-        for table in ('users','sessions','habits','logs','password_resets','rate_limits'):
+        for table in ('users','sessions','habits','logs','password_resets','rate_limits','oauth_flows','google_identities'):
             self.db.execute(f'ALTER TABLE {table} ENABLE ROW LEVEL SECURITY')
             self.db.execute(f'REVOKE ALL ON TABLE {table} FROM PUBLIC')
             for role in ('anon','authenticated'):

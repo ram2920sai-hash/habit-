@@ -103,6 +103,10 @@ def init():
         CREATE TABLE IF NOT EXISTS password_resets(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
           code_hash TEXT NOT NULL, salt TEXT NOT NULL, expires_at REAL NOT NULL, attempts INTEGER NOT NULL DEFAULT 0);
         CREATE TABLE IF NOT EXISTS rate_limits(key TEXT PRIMARY KEY, started REAL NOT NULL, count INTEGER NOT NULL);
+        CREATE TABLE IF NOT EXISTS oauth_flows(state_hash TEXT PRIMARY KEY,browser_hash TEXT NOT NULL,
+          verifier TEXT NOT NULL,nonce TEXT NOT NULL,expires_at REAL NOT NULL);
+        CREATE TABLE IF NOT EXISTS google_identities(subject TEXT PRIMARY KEY,
+          user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE);
         ''')
 init()
 
@@ -673,3 +677,6 @@ def insights(request:Request):
                       'goal_value':h['goal_value'],'goal_unit':h['goal_unit'],'target':target,
                       'completed':completed,'period':period,'percentage':min(100,round(completed/target*100))})
     return {'monthly':monthly,'goals':goals}
+
+from google_login import register as register_google_login
+register_google_login(app,connection,make_hash,issue_session,DEFAULTS,rate_limit)

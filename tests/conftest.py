@@ -19,11 +19,13 @@ def database(tmp_path,monkeypatch):
     monkeypatch.delenv('NEXO_HTTPS',raising=False)
     monkeypatch.delenv('BREVO_API_KEY',raising=False)
     monkeypatch.delenv('DATABASE_PASSWORD',raising=False)
+    monkeypatch.delenv('GOOGLE_CLIENT_ID',raising=False)
+    monkeypatch.delenv('GOOGLE_CLIENT_SECRET',raising=False)
     if server.DATABASE_URL:
         from urllib.parse import urlsplit
         parsed=urlsplit(server.DATABASE_URL)
         if parsed.hostname not in ('localhost','127.0.0.1') or parsed.path!='/nexo_test':
             pytest.fail('Tests may only clear a local database explicitly named nexo_test')
         with server.connection() as db:
-            db.execute('TRUNCATE users,rate_limits RESTART IDENTITY CASCADE')
+            db.execute('TRUNCATE users,rate_limits,oauth_flows RESTART IDENTITY CASCADE')
     server.init()
