@@ -15,6 +15,8 @@ This version supports a cloud PostgreSQL database. Local SQLite remains availabl
 7. For email reset codes on Render Free, configure BREVO_API_KEY and EMAIL_FROM in Render's private environment settings. Verify the sender and enable transactional email in Brevo. The backend uses Brevo's HTTPS API; Render Free blocks standard SMTP connections. Sender approval/domain requirements and email usage limits are controlled by the provider.
 8. Set the health-check path to /healthz, deploy, and check the logs. A successful deployment gives you one HTTPS link to share with friends. Never paste secrets into GitHub files or public logs.
 
+To avoid password encoding mistakes, use two private Render settings: `DATABASE_URL=postgresql://USER@HOST:5432/postgres?sslmode=verify-full` and `DATABASE_PASSWORD` containing your original database password exactly as saved. Replace USER and HOST with your Supabase Session pooler details. Do not include a password or placeholder brackets in this version of DATABASE_URL. DATABASE_PASSWORD is passed directly to the database driver, so symbols such as @, #, %, /, [ and ] do not need URL encoding. A complete password-containing URI remains supported when DATABASE_PASSWORD is unset.
+
 The included render.yaml also defines these settings for a Render Blueprint. Supply private values in the Render dashboard. No cloud accounts, database, or email sender are created just by uploading this code.
 
 On first startup, tables are created automatically. PostgreSQL connections verify the database server's TLS certificate. Supabase tables enable row-level security and remove browser-role permissions: this app uses its own backend sessions, not Supabase Auth or the public Data API. Keep the database owner credentials on the backend only.

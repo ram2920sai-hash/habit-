@@ -61,3 +61,16 @@ def test_standard_uri_and_ipv6_are_preserved(monkeypatch):
     for url in ('postgresql://user:fake%5Bpassword%5D@db.example.com/db','postgresql://user:fake@[::1]:5432/db'):
         Postgres(url)
         assert captured[-1]==url
+
+
+def test_separate_database_password_preserves_symbols(monkeypatch):
+    from database import Postgres
+    captured=[]
+    password='fake[]@#%/? password'
+    monkeypatch.setenv('DATABASE_PASSWORD',password)
+    monkeypatch.setattr('database.psycopg.connect',lambda url,**kwargs:captured.append((url,kwargs)))
+    url='postgresql://postgres.project@aws-0-ap-south-1.pooler.supabase.com:5432/postgres'
+    Postgres(url)
+    assert captured[0][0]==url
+    assert captured[0][1]['password']==password
+    assert captured[0][1]['sslmode']=='verify-full'

@@ -18,6 +18,7 @@ def database(tmp_path,monkeypatch):
     monkeypatch.delenv('NEXO_PUBLIC_ORIGIN',raising=False)
     monkeypatch.delenv('NEXO_HTTPS',raising=False)
     monkeypatch.delenv('BREVO_API_KEY',raising=False)
+    monkeypatch.delenv('DATABASE_PASSWORD',raising=False)
     if server.DATABASE_URL:
         from urllib.parse import urlsplit
         parsed=urlsplit(server.DATABASE_URL)
