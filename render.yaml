@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: nexo
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.lock.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT --no-proxy-headers
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.2
+      - key: NEXO_HTTPS
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: NEXO_ALLOWED_HOSTS
+        sync: false
+      - key: NEXO_PUBLIC_ORIGIN
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false

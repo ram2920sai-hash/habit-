@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "NEXO – Smart Habit Tracker",
+  "short_name": "NEXO",
+  "description": "Your habits, goals, streaks and insights in one place.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#f9f9f7",
+  "icons": [
+    {"src":"/static/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"/static/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
